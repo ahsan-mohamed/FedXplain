@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  backend:
+    build: .
+    container_name: fedxplain-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models_store:/app/models_store
+      - ./logs:/app/logs
+      - ./data:/app/data
+      - ./fedxplain.db:/app/fedxplain.db   # remove this line if using postgres below
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=sqlite:///./fedxplain.db
+    restart: unless-stopped
+
+  # Uncomment to use Postgres instead of SQLite in production:
+  # postgres:
+  #   image: postgres:16-alpine
+  #   container_name: fedxplain-db
+  #   environment:
+  #     POSTGRES_USER: fedxplain
+  #     POSTGRES_PASSWORD: changeme
+  #     POSTGRES_DB: fedxplain
+  #   volumes:
+  #     - pg_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #
+  # volumes:
+  #   pg_data:
