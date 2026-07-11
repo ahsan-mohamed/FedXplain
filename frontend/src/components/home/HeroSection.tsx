@@ -1,10 +1,24 @@
 // components/home/HeroSection.tsx
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function HeroSection() {
   const navigate = useNavigate();
+  const { loginDemo } = useAuth();
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
+
+  async function handleTryDemo() {
+    setIsDemoLoading(true);
+    try {
+      await loginDemo();
+      navigate("/portal/dashboard");
+    } catch {
+      setIsDemoLoading(false);
+    }
+  }
 
   return (
     <section className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
@@ -54,20 +68,32 @@ export function HeroSection() {
         transition={{ duration: 0.7, delay: 0.55 }}
         className="mt-10 flex flex-col gap-4 sm:flex-row"
       >
+        <button
+          onClick={handleTryDemo}
+          disabled={isDemoLoading}
+          className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#0f1b3d] px-7 py-3.5 text-sm font-medium text-white transition hover:bg-[#1e2f5c] disabled:opacity-60"
+        >
+          <Sparkles className="h-4 w-4" />
+          {isDemoLoading ? "Starting demo..." : "Try it out — no signup needed"}
+        </button>
         <a
           href="#technology"
-          className="group inline-flex items-center justify-center gap-2 rounded-full bg-[#0f1b3d] px-7 py-3.5 text-sm font-medium text-white transition hover:bg-[#1e2f5c]"
+          className="group inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 px-7 py-3.5 text-sm font-medium text-[#111111] transition hover:border-gray-400"
         >
           Explore Platform
           <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
         </a>
-        <button
-          onClick={() => navigate("/login")}
-          className="rounded-full border border-gray-200 px-7 py-3.5 text-sm font-medium text-[#111111] transition hover:border-gray-400"
-        >
-          Login
-        </button>
       </motion.div>
+
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.7, delay: 0.7 }}
+        onClick={() => navigate("/login")}
+        className="mt-5 text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600"
+      >
+        or sign in with an account
+      </motion.button>
     </section>
   );
 }

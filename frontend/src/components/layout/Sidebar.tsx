@@ -7,6 +7,7 @@ import {
   Settings, ChevronLeft, ChevronRight, LogOut,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Attribution } from "@/components/shared/Attribution";
 import type { Role } from "@/types/api";
 
 interface NavItem {
@@ -82,6 +83,8 @@ export function Sidebar() {
           {!collapsed && <span>Log out</span>}
         </button>
       </div>
+
+      {!collapsed && <Attribution variant="sidebar" />}
     </motion.aside>
   );
 }

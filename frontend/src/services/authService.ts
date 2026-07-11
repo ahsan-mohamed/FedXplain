@@ -14,6 +14,12 @@ export const authService = {
     return data;
   },
 
+  async loginDemo(): Promise<TokenResponse> {
+    const { data } = await apiClient.post<TokenResponse>("/auth/demo-login");
+    setTokens(data.access_token, data.refresh_token);
+    return data;
+  },
+
   logout() {
     clearTokens();
   },

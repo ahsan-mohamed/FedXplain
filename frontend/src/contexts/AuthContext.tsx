@@ -16,6 +16,7 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (payload: UserLoginPayload) => Promise<void>;
+  loginDemo: () => Promise<void>;
   register: (payload: UserRegisterPayload) => Promise<void>;
   logout: () => void;
   hasRole: (...roles: Role[]) => boolean;
@@ -58,6 +59,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function loginDemo() {
+    await authService.loginDemo();
+    const decoded = decodeCurrentToken();
+    if (decoded) {
+      setEmail(decoded.email);
+      setRole(decoded.role);
+    }
+  }
+
   async function register(payload: UserRegisterPayload) {
     await authService.register(payload);
   }
@@ -74,7 +84,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ email, role, isAuthenticated: !!email, isLoading, login, register, logout, hasRole }}
+      value={{ email, role, isAuthenticated: !!email, isLoading, login, loginDemo, register, logout, hasRole }}
     >
       {children}
     </AuthContext.Provider>

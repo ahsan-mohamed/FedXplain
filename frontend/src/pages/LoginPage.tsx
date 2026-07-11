@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/shared/Button";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Sparkles } from "lucide-react";
 
 const loginSchema = z.object({
   email: z.string().email("Enter a valid email address"),
@@ -18,8 +18,9 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, loginDemo } = useAuth();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [isDemoLoading, setIsDemoLoading] = useState(false);
 
   const {
     register,
@@ -37,6 +38,19 @@ export function LoginPage() {
     }
   }
 
+  async function handleTryDemo() {
+    setServerError(null);
+    setIsDemoLoading(true);
+    try {
+      await loginDemo();
+      navigate("/portal/dashboard");
+    } catch {
+      setServerError("Could not start the demo right now. Please try again.");
+    } finally {
+      setIsDemoLoading(false);
+    }
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-white px-6">
       <motion.div
@@ -49,8 +63,22 @@ export function LoginPage() {
           FedXplain
         </Link>
 
-        <h1 className="font-display mb-1 text-2xl font-medium text-[#111111]">Welcome back</h1>
-        <p className="mb-8 text-sm text-gray-500">Sign in to access the analyst portal.</p>
+        <Button
+          type="button"
+          variant="secondary"
+          isLoading={isDemoLoading}
+          onClick={handleTryDemo}
+          className="mb-6 w-full border-[#0f1b3d]/20"
+        >
+          <Sparkles className="h-4 w-4" />
+          Try the demo — no signup needed
+        </Button>
+
+        <div className="mb-6 flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-100" />
+          <span className="text-xs text-gray-400">or sign in</span>
+          <div className="h-px flex-1 bg-gray-100" />
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
