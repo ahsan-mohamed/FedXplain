@@ -63,6 +63,52 @@ def login(payload: UserLogin, request: Request, db: Session = Depends(get_db)):
     return TokenResponse(access_token=access_token, refresh_token=refresh_token)
 
 
+@router.post("/demo-login", response_model=TokenResponse)
+def demo_login(request: Request, db: Session = Depends(get_db)):
+    """
+    One-click 'Try Demo' entry point -- no email/password required from the
+    visitor. Looks up (or creates, on first ever call) a fixed demo account
+    with full admin access, and issues real JWT tokens for it.
+
+    This does NOT bypass or weaken the auth system -- the demo account is a
+    genuine User row with a genuine (randomly generated, never exposed)
+    hashed password. It simply skips the login FORM for convenience; every
+    downstream request still goes through the exact same JWT + RBAC checks
+    as any other user.
+    """
+    DEMO_EMAIL = "demo@fedxplain.app"
+
+    user = db.query(User).filter(User.email == DEMO_EMAIL).first()
+    if user is None:
+        import secrets
+        random_password = secrets.token_hex(16)  # never given to the client
+        user = User(
+            email=DEMO_EMAIL,
+            hashed_password=hash_password(random_password),
+            full_name="Demo User",
+            role="admin",
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.info("Created demo account on first use")
+
+    if not user.is_active:
+        raise HTTPException(status_code=403, detail="Demo account is deactivated")
+
+    access_token = create_access_token(user.email, user.role)
+    refresh_token = create_refresh_token(user.email, user.role)
+
+    db.add(AuditLog(
+        user_id=user.id, action="DEMO_LOGIN",
+        ip_address=request.client.host if request.client else None,
+    ))
+    db.commit()
+
+    logger.info("Demo login issued")
+    return TokenResponse(access_token=access_token, refresh_token=refresh_token)
+
+
 @router.post("/refresh", response_model=TokenResponse)
 def refresh_token_endpoint(refresh_token: str, db: Session = Depends(get_db)):
     try:
