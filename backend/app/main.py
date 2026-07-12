@@ -27,6 +27,7 @@ from app.api.routes_predict import router as predict_router
 from app.api.routes_explain import router as explain_router
 from app.api.routes_websocket import router as ws_router
 from app.api.routes_audit import router as audit_router
+from app.api.routes_research import router as research_router
 
 setup_logging()
 logger = get_logger(__name__)
@@ -150,3 +151,4 @@ app.include_router(predict_router)
 app.include_router(explain_router)
 app.include_router(ws_router)
 app.include_router(audit_router)
+app.include_router(research_router)
