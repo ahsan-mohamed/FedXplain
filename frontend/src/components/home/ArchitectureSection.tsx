@@ -1,5 +1,6 @@
 // components/home/ArchitectureSection.tsx
 import { motion } from "framer-motion";
+import { AnimatedFlowDiagram } from "@/components/home/AnimatedFlowDiagram";
 
 const LAYERS = [
   { name: "Simulated Banks", detail: "5 institutions, non-IID data, FedAvg aggregation" },
@@ -17,10 +18,12 @@ export function ArchitectureSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6 }}
-          className="font-display mb-16 text-center text-4xl font-semibold text-[#111111]"
+          className="font-display mb-12 text-center text-4xl font-semibold text-[#111111]"
         >
           Architecture
         </motion.h2>
+
+        <AnimatedFlowDiagram />
 
         <div className="space-y-4">
           {LAYERS.map((layer, i) => (
