@@ -1,5 +1,5 @@
 // pages/ExplainabilityPage.tsx
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Search, FileText } from "lucide-react";
 import { explainService } from "@/services/explainService";
@@ -7,17 +7,18 @@ import { Button } from "@/components/shared/Button";
 import { FeatureContributionBars } from "@/components/explainability/FeatureContributionBars";
 import { ErrorState, EmptyState } from "@/components/shared/States";
 import type { ExplanationOut } from "@/types/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function ExplainabilityPage() {
-  const [txnId, setTxnId] = useState("");
+  const [searchParams] = useSearchParams();
+  const [txnId, setTxnId] = useState(searchParams.get("txn") ?? "");
   const [explanation, setExplanation] = useState<ExplanationOut | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  async function handleLookup() {
-    const id = Number(txnId);
+  const handleLookup = useCallback(async (idOverride?: string) => {
+    const id = Number(idOverride ?? txnId);
     if (!id || id <= 0) {
       setError("Enter a valid transaction ID.");
       return;
@@ -33,7 +34,18 @@ export function ExplainabilityPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [txnId]);
+
+  // Auto-lookup when arriving via a link like /portal/explainability?txn=42
+  // (used by fraud alert toasts and the transaction drawer)
+  useEffect(() => {
+    const paramTxn = searchParams.get("txn");
+    if (paramTxn) {
+      setTxnId(paramTxn);
+      handleLookup(paramTxn);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <div className="mx-auto max-w-3xl space-y-8">
@@ -53,7 +65,7 @@ export function ExplainabilityPage() {
           placeholder="Transaction ID (e.g. 1)"
           className="flex-1 rounded-xl border border-gray-200 px-4 py-2.5 text-sm outline-none focus:border-[#0f1b3d]"
         />
-        <Button onClick={handleLookup} isLoading={isLoading}>
+        <Button onClick={() => handleLookup()} isLoading={isLoading}>
           <Search className="h-4 w-4" />
           Look up
         </Button>
