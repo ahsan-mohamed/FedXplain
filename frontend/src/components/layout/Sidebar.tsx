@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Activity, Receipt, Sparkles, Boxes, ScrollText,
-  Settings, ChevronLeft, ChevronRight, LogOut,
+  Settings, ChevronLeft, ChevronRight, LogOut, UploadCloud,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Attribution } from "@/components/shared/Attribution";
@@ -20,6 +20,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", to: "/portal/dashboard", icon: LayoutDashboard },
   { label: "Predictions", to: "/portal/predictions", icon: Activity, roles: ["admin", "fraud_analyst"] },
+  { label: "Batch Prediction", to: "/portal/batch-prediction", icon: UploadCloud, roles: ["admin", "fraud_analyst"] },
   { label: "Transactions", to: "/portal/transactions", icon: Receipt, roles: ["admin", "auditor"] },
   { label: "Explainability", to: "/portal/explainability", icon: Sparkles },
   { label: "Models", to: "/portal/models", icon: Boxes },

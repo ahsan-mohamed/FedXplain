@@ -9,6 +9,7 @@ import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { PredictionsPage } from "@/pages/PredictionsPage";
+import { BatchPredictionPage } from "@/pages/BatchPredictionPage";
 import { ExplainabilityPage } from "@/pages/ExplainabilityPage";
 import { BaselReportPage } from "@/pages/BaselReportPage";
 import { TransactionsPage } from "@/pages/TransactionsPage";
@@ -43,6 +44,7 @@ export default function App() {
               <Route index element={<Navigate to="dashboard" replace />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="predictions" element={<PredictionsPage />} />
+              <Route path="batch-prediction" element={<BatchPredictionPage />} />
               <Route path="transactions" element={<TransactionsPage />} />
               <Route path="explainability" element={<ExplainabilityPage />} />
               <Route path="explainability/:transactionId/basel" element={<BaselReportPage />} />
