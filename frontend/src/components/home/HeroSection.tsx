@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { HeroBackground } from "@/components/home/HeroBackground";
 
 export function HeroSection() {
   const navigate = useNavigate();
@@ -21,12 +22,14 @@ export function HeroSection() {
   }
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
+      <HeroBackground />
+
       <motion.p
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mb-6 text-sm font-medium uppercase tracking-[0.2em] text-gray-400"
+        className="relative z-10 mb-6 text-sm font-medium uppercase tracking-[0.2em] text-gray-400"
       >
         Federated Learning · Explainable AI · LLM Reasoning
       </motion.p>
@@ -35,7 +38,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.1 }}
-        className="font-display text-6xl font-semibold leading-[1.05] tracking-tight text-[#111111] sm:text-7xl lg:text-8xl"
+        className="font-display relative z-10 text-6xl font-semibold leading-[1.05] tracking-tight text-[#111111] sm:text-7xl lg:text-8xl"
       >
         FedXplain
       </motion.h1>
@@ -44,7 +47,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.25 }}
-        className="font-display mt-6 text-3xl font-medium leading-tight text-[#111111] sm:text-4xl"
+        className="font-display relative z-10 mt-6 text-3xl font-medium leading-tight text-[#111111] sm:text-4xl"
       >
         Federated Intelligence.
         <br />
@@ -55,7 +58,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="mt-6 max-w-xl text-lg text-gray-500"
+        className="relative z-10 mt-6 max-w-xl text-lg text-gray-500"
       >
         AI-powered financial fraud detection using federated learning,
         explainable AI, and large language models — built to catch fraud
@@ -66,7 +69,7 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, delay: 0.55 }}
-        className="mt-10 flex flex-col gap-4 sm:flex-row"
+        className="relative z-10 mt-10 flex flex-col gap-4 sm:flex-row"
       >
         <button
           onClick={handleTryDemo}
@@ -90,7 +93,7 @@ export function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.7 }}
         onClick={() => navigate("/login")}
-        className="mt-5 text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600"
+        className="relative z-10 mt-5 text-xs text-gray-400 underline underline-offset-2 hover:text-gray-600"
       >
         or sign in with an account
       </motion.button>
