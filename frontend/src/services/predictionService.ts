@@ -26,4 +26,11 @@ export const predictionService = {
     });
     return data;
   },
+
+  async getRecentPredictions(limit = 5): Promise<PredictionResult[]> {
+    const { data } = await apiClient.get<PredictionResult[]>("/predict/recent", {
+      params: { limit },
+    });
+    return data;
+  },
 };
