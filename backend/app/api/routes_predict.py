@@ -180,6 +180,41 @@ def list_model_versions(
     return db.query(ModelVersion).order_by(ModelVersion.created_at.desc()).all()
 
 
+@router.get("/predict/recent", response_model=list[PredictionResult])
+def get_recent_predictions(
+    limit: int = 5,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),  # any authenticated role
+):
+    """
+    Powers the Dashboard's "Recent Predictions" widget for every role --
+    unlike /audit/transactions (Admin/Auditor only), this is intentionally
+    open to Fraud Analysts too, since they otherwise have no way to see
+    even their own recent activity on the dashboard.
+
+    Admins and Auditors see recent activity system-wide (oversight view).
+    Fraud Analysts see only transactions THEY submitted (their own activity,
+    not other analysts' work -- keeps this consistent with least-privilege
+    access even for a "recent activity" convenience feature).
+    """
+    query = db.query(Transaction)
+    if user.role not in (Role.ADMIN.value, Role.AUDITOR.value):
+        query = query.filter(Transaction.submitted_by_id == user.id)
+
+    transactions = query.order_by(Transaction.created_at.desc()).limit(min(limit, 20)).all()
+
+    return [
+        PredictionResult(
+            transaction_id=t.id,
+            fraud_probability=t.fraud_probability,
+            is_fraud_predicted=t.is_fraud_predicted,
+            model_version=t.model_version,
+            created_at=t.created_at,
+        )
+        for t in transactions
+    ]
+
+
 @router.post("/models/activate/{version_tag}", response_model=ModelVersionOut)
 def activate_model_version(
     version_tag: str,
