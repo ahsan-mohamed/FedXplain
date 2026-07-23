@@ -6,6 +6,7 @@ import { predictionService } from "@/services/predictionService";
 import { Button } from "@/components/shared/Button";
 import { RiskBadge } from "@/components/shared/RiskBadge";
 import { FeatureContributionBars } from "@/components/explainability/FeatureContributionBars";
+import { ScanningAnimation } from "@/components/prediction/ScanningAnimation";
 import {
   generateTypicalTransaction,
   generateSuspiciousTransaction,
@@ -159,6 +160,8 @@ export function PredictionsPage() {
           Predict &amp; Explain
         </Button>
       </div>
+
+      {isSubmitting && <ScanningAnimation />}
 
       {error && (
         <div className="flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">

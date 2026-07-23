@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/shared/ProtectedRoute";
+import { IntroSplash } from "@/components/shared/IntroSplash";
 import { PortalLayout } from "@/layouts/PortalLayout";
 
 import { LandingPage } from "@/pages/LandingPage";
@@ -25,6 +26,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <IntroSplash />
         <BrowserRouter>
           <Routes>
             {/* Public site */}
